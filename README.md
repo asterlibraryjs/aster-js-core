@@ -1,9 +1,9 @@
-# @aster\core
+# @aster-js/core
 
 #### Lifecycle
-- [Lazy](./packages/core/doc/lazy.md)
-- [FunctionHook](./packages/core/doc/function-hook.md)
-- [Disposable](./packages/core/doc/disposable.md)
+- [Lazy](./doc/lazy.md)
+- [FunctionHook](./doc/function-hook.md)
+- [Disposable](./doc/disposable.md)
 
 #### Metadata
-- [Tag](./packages/core/doc/tag.md)
+- [Tag](./doc/tag.md)
