@@ -1,5 +1,5 @@
 {
-  "name": "@aster/core",
+  "name": "@aster-js/core",
   "version": "1.0.0-beta.1",
   "description": "Aster core library part of Aster js library",
   "main": "./lib/index.js",
@@ -12,7 +12,19 @@
     "build-test": "tsc --project tests/tsconfig.json",
     "test": "tsc --project tests/tsconfig.json  && rollup -c && karma start"
   },
-  "author": "",
+  "directories": {
+    "doc": "doc",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asterlibraryjs/aster-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/asterlibraryjs/aster-core/issues"
+  },
+  "homepage": "https://github.com/asterlibraryjs/aster-core#readme",
   "license": "ISC",
   "dependencies": {
     "lit-html": "^1.3.0",
@@ -40,5 +52,6 @@
     "tslint": "5.12.1",
     "tslint-eslint-rules": "5.4.0",
     "typescript": "^4.1.2"
-  }
+  },
+  "author": ""
 }
