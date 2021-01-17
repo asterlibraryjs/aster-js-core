@@ -1,0 +1,13 @@
+{
+    "javascript.preferences.importModuleSpecifier": "relative",
+    "javascript.preferences.importModuleSpecifierEnding": "minimal",
+    "javascript.preferences.quoteStyle": "double",
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.preferences.importModuleSpecifierEnding": "minimal",
+    "typescript.preferences.quoteStyle": "double",
+    "debug.console.fontFamily": "Cascadia Code",
+    "editor.fontLigatures": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "liveServer.settings.root": ".bin/test/",
+    "liveServer.settings.CustomBrowser": "chrome"
+}
