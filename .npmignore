@@ -1,0 +1,11 @@
+/.bin/
+/.vscode/
+/node_modules/
+/src/
+/tests/
+.gitignore
+.npmignore
+karma.conf.js
+package-lock.json
+rollup.config.js
+tsconfig.json
