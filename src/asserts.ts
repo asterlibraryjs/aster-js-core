@@ -1,4 +1,4 @@
-import { Constructor } from "./type";
+import { Constructor, TypeOfResult } from "./type";
 
 export class AssertionError extends Error { }
 
@@ -32,7 +32,11 @@ export namespace asserts {
     export function ofType(value: unknown, type: "boolean", message?: string): asserts value is boolean;
     export function ofType(value: unknown, type: "string", message?: string): asserts value is string;
     export function ofType(value: unknown, type: "function", message?: string): asserts value is Function;
-    export function ofType(value: unknown, type: string, message?: string): asserts value is any {
+    export function ofType(value: unknown, type: "undefined", message?: string): asserts value is undefined;
+    export function ofType(value: unknown, type: "bigint", message?: string): asserts value is bigint;
+    export function ofType(value: unknown, type: "symbol", message?: string): asserts value is symbol;
+    export function ofType(value: unknown, type: "object", message?: string): asserts value is object;
+    export function ofType(value: unknown, type: TypeOfResult, message?: string): asserts value is any {
         if (typeof value !== type) {
             throw new AssertionError(message ?? `Expected typeof "${type}" but having a typeof "${typeof value}"`);
         }
