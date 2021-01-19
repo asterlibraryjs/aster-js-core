@@ -25,7 +25,7 @@ export class Lazy<T extends object = object> implements IDisposable {
     build(): boolean {
         IDisposable.checkDisposed(this);
 
-        if(this._state) return false;
+        if(this._state === LazyState.value) return false;
 
         try {
             this._value = this._factory();

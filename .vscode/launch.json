@@ -9,7 +9,7 @@
             "request": "attach",
             "name": "Attach Karma Chrome",
             "address": "localhost",
-            "port": 9333,
+            "port": 9876,
             "pathMapping": {
                 "/": "${workspaceRoot}",
                 "/base/": "${workspaceRoot}/"
