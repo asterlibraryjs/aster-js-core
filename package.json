@@ -5,11 +5,8 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
+    "prepublish": "npm run build",
     "build": "tsc",
-    "bundle": "rollup -c",
-    "build-bundle": "tsc && rollup -c",
-    "run-test": "karma start",
-    "build-test": "tsc --project tests/tsconfig.json",
     "test": "tsc --project tests/tsconfig.json  && rollup -c && karma start"
   },
   "directories": {
@@ -30,9 +27,11 @@
     "tslib": "^1.11.1"
   },
   "devDependencies": {
+    "rollup": "^1.31.0",
     "@rollup/plugin-alias": "^3.1.1",
     "@rollup/plugin-multi-entry": "^3.0.1",
     "@rollup/plugin-node-resolve": "^8.0.1",
+    "rollup-plugin-sourcemaps": "^0.6.3",
     "@types/chai": "4.1.7",
     "@types/mocha": "5.2.5",
     "@types/sinon": "7.0.5",
@@ -45,8 +44,6 @@
     "karma-sinon": "1.0.5",
     "mocha": "^8.1.2",
     "puppeteer": "^1.20.0",
-    "rollup": "^1.31.0",
-    "rollup-plugin-copy": "^3.3.0",
     "sinon": "5.0.7",
     "tslint": "5.12.1",
     "tslint-eslint-rules": "5.4.0",
