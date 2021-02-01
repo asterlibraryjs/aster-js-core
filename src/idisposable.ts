@@ -26,8 +26,8 @@ export namespace IDisposable {
         };
     }
 
-    export function safeDisposeAll(instance: Iterable<any>): void {
-        if (Symbol.iterator in instance) {
+    export function safeDisposeAll(instance: any): void {
+        if (typeof instance === "object" && instance !== null && typeof instance[Symbol.iterator] === "function") {
             for (const item of instance) safeDispose(item);
         }
     }
@@ -48,8 +48,18 @@ export class DisposedError extends Error { }
 /** Do not use, this class is used to type the IDisposable.mixin() result */
 export class Disposable implements IDisposable {
     private _disposed?: boolean;
+    private _children?: IDisposable[];
 
     get disposed(): boolean { return Boolean(this._disposed); }
+
+    registerForDispose(disposable: IDisposable): void {
+        if (!this._children) {
+            this._children = [disposable];
+        }
+        else {
+            this._children.push(disposable);
+        }
+    }
 
     protected checkIfDisposed(): void {
         IDisposable.checkDisposed(this);
@@ -58,6 +68,9 @@ export class Disposable implements IDisposable {
     [IDisposable.dispose](): void {
         if (!this._disposed) {
             this._disposed = true;
+
+
+
             this.dispose && this.dispose();
         }
     }
