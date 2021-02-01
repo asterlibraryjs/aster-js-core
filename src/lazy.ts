@@ -1,4 +1,4 @@
-import { IDisposable } from "./idisposable";
+import { DisposedError, IDisposable } from "./idisposable";
 import { Constructor } from "./type";
 
 const enum LazyState {
@@ -16,7 +16,7 @@ export class Lazy<T extends object = object> implements IDisposable {
     get disposed(): boolean { return this._state === LazyState.disposed; }
 
     constructor(
-        private readonly _factory: () => T,
+        private _factory: () => T,
         ctor?: Constructor<T>
     ) {
         this._prototype = ctor?.prototype;
@@ -25,10 +25,17 @@ export class Lazy<T extends object = object> implements IDisposable {
     build(): boolean {
         IDisposable.checkDisposed(this);
 
-        if(this._state === LazyState.value) return false;
+        if (this._state === LazyState.value) return false;
 
         try {
-            this._value = this._factory();
+            const result = this._factory();
+
+            // Avoid keeping references through the factory callback
+            // Avoid also any dirty hacked state to throw errors with strong reference to value
+            this._factory = () => result;
+
+            this._value = result;
+
             this._state = LazyState.value;
 
             if (typeof this._value === "object") {
@@ -67,6 +74,8 @@ export class Lazy<T extends object = object> implements IDisposable {
             IDisposable.safeDispose(this._value);
         }
         this._state = LazyState.disposed;
+        // Avoid keeping references through the factory callback
+        this._factory = () => { throw new DisposedError() };
     }
 
     private getInstance(): T {

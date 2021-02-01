@@ -16,13 +16,13 @@ module.exports = function (config) {
         reporters: ["mocha"],
         autoWatch: false,
         port: 8081,
-        browsers: ["ChromeNoSandbox"],
+        browsers: ["ChromeNoExtensions"],
         browserDisconnectTolerance: 3,
         browserNoActivityTimeout: 100000,
         customLaunchers: {
-            ChromeNoSandbox: {
+            ChromeNoExtensions: {
                 base: "Chrome",
-                flags: ["--no-sandbox", '--disable-translate', '--disable-extensions', '--remote-debugging-port=9223']
+                flags: ["--disable-translate", "--disable-extensions", "--remote-debugging-port=9223"]
             }
         },
         singleRun: false
