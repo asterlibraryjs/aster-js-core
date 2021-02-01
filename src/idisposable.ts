@@ -69,7 +69,8 @@ export class Disposable implements IDisposable {
         if (!this._disposed) {
             this._disposed = true;
 
-
+            IDisposable.safeDisposeAll(this._children);
+            delete this._children;
 
             this.dispose && this.dispose();
         }
