@@ -1,5 +1,6 @@
 import resolve from "@rollup/plugin-node-resolve";
 import multiEntry from "@rollup/plugin-multi-entry";
+import sourcemap from "rollup-plugin-sourcemaps";
 import pkg from "./package.json"
 
 export default [
@@ -19,7 +20,8 @@ export default [
         ],
         plugins: [
             resolve(),
-            multiEntry()
+            multiEntry(),
+            sourcemap()
         ],
         external: [
             ...Object.keys(pkg.devDependencies || {})
