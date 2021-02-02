@@ -48,16 +48,16 @@ export class DisposedError extends Error { }
 /** Do not use, this class is used to type the IDisposable.mixin() result */
 export class Disposable implements IDisposable {
     private _disposed?: boolean;
-    private _children?: IDisposable[];
+    private _disposables?: IDisposable[];
 
     get disposed(): boolean { return Boolean(this._disposed); }
 
     registerForDispose(disposable: IDisposable): void {
-        if (!this._children) {
-            this._children = [disposable];
+        if (!this._disposables) {
+            this._disposables = [disposable];
         }
         else {
-            this._children.push(disposable);
+            this._disposables.push(disposable);
         }
     }
 
@@ -69,8 +69,8 @@ export class Disposable implements IDisposable {
         if (!this._disposed) {
             this._disposed = true;
 
-            IDisposable.safeDisposeAll(this._children);
-            delete this._children;
+            IDisposable.safeDisposeAll(this._disposables);
+            delete this._disposables;
 
             this.dispose && this.dispose();
         }
