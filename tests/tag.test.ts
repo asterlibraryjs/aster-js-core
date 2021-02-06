@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import { Tag } from "../src";
+import { Tag, Tags } from "../src";
 
 describe("Tag", () => {
 
@@ -9,11 +9,12 @@ describe("Tag", () => {
         assert.equal(tag.toString(), "My Description");
     });
 
-    it(`Should return false when no value is associate`, () => {
+    it(`Should return false when no value is associated`, () => {
         const tag = Tag<string>("My Description");
         class CustomType { }
 
         assert.isFalse(tag.has(CustomType));
+        assert.isUndefined(tag(CustomType));
         assert.isUndefined(tag.get(CustomType));
     });
 
@@ -24,6 +25,7 @@ describe("Tag", () => {
         tag.set(CustomType, "Value");
 
         assert.isTrue(tag.has(CustomType));
+        assert.equal(tag(CustomType), "Value");
         assert.equal(tag.get(CustomType), "Value");
     });
 
@@ -36,6 +38,7 @@ describe("Tag", () => {
         tag.set(CustomType, "New Value");
 
         assert.isTrue(tag.has(CustomType));
+        assert.equal(tag(CustomType), "New Value");
         assert.equal(tag.get(CustomType), "New Value");
     });
 
@@ -67,6 +70,7 @@ describe("Tag", () => {
         tag.set(CustomType, "Value");
 
         assert.isTrue(readonlyTag.has(CustomType));
+        assert.equal(readonlyTag(CustomType), "Value");
         assert.equal(readonlyTag.get(CustomType), "Value");
     });
 
@@ -85,20 +89,19 @@ describe("Tag", () => {
         const obj = {};
 
         assert.isFalse(tag.has(obj));
+        assert.equal(tag(obj), 0);
         assert.equal(tag.get(obj), 0);
         assert.isTrue(tag.has(obj));
     });
 
     it(`Should create dynamically multiple tag value and keep this value for next time`, () => {
-        const tag = Tag.lazy("My Description", (state) => ++state.lastId, { lastId: 0 });
-
         const obj1 = {};
         const obj2 = {};
 
-        assert.equal(tag.get(obj1), 1);
-        assert.equal(tag.get(obj2), 2);
-        assert.equal(tag.get(obj1), 1);
-        assert.equal(tag.get(obj2), 2);
+        assert.equal(Tags.hashId(obj1), 1);
+        assert.equal(Tags.hashId(obj2), 2);
+        assert.equal(Tags.hashId(obj1), 1);
+        assert.equal(Tags.hashId(obj2), 2);
     });
 
 });

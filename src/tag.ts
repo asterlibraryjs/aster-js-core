@@ -1,5 +1,6 @@
 
 export interface ReadonlyTag<T> {
+    (target: object):T;
 
     has(target: object): boolean;
 
@@ -22,7 +23,12 @@ export interface Tag<T> extends ReadonlyTag<T | undefined> {
 /** Create a new Tag */
 export function Tag<T = any>(description: string, defaultValue?: T): Tag<T> {
     const store = new WeakMap();
-    const readOnlyTag = {
+
+    function customReadonlyTag(target: object): T {
+        return (customReadonlyTag as any).get(target);
+    };
+
+    const readOnlyTag = Object.assign(customReadonlyTag, {
         has(target: object): boolean {
             return store.has(target);
         },
@@ -32,9 +38,13 @@ export function Tag<T = any>(description: string, defaultValue?: T): Tag<T> {
         toString(): string {
             return description;
         }
-    };
+    });
     Object.freeze(readOnlyTag);
-    return {
+
+    function customTag(target: object): T {
+        return (customTag as any).get(target);
+    };
+    return Object.assign(customTag, {
         ...readOnlyTag,
         readOnly(): ReadonlyTag<T | undefined> {
             return readOnlyTag;
@@ -45,7 +55,7 @@ export function Tag<T = any>(description: string, defaultValue?: T): Tag<T> {
         delete(target: object): void {
             store.delete(target);
         }
-    };
+    });
 }
 
 export namespace Tag {
@@ -53,7 +63,12 @@ export namespace Tag {
     export function lazy<T = any, S = any>(description: string, factory: (state: S) => T, state: S): ReadonlyTag<T>;
     export function lazy<T>(description: string, factory: (state: any) => T, state?: any): ReadonlyTag<T> {
         const store = new WeakMap();
-        const readOnlyTag = {
+
+        function lazyTag(target: object): T {
+            return (lazyTag as any).get(target);
+        };
+
+        const readOnlyTag = Object.assign(lazyTag, {
             has(target: object): boolean {
                 return store.has(target);
             },
@@ -66,7 +81,7 @@ export namespace Tag {
             toString(): string {
                 return description;
             }
-        };
+        });
         Object.freeze(readOnlyTag);
         return readOnlyTag;
     }

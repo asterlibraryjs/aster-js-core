@@ -35,7 +35,7 @@ export abstract class ApiService {
     private readonly _metadata: ApiMetadata;
 
     constructor() {
-        this._metadata = ApiMetadataTag.get(this.constructor);
+        this._metadata = ApiMetadataTag(this.constructor);
     }
     // ...
 ```
@@ -54,7 +54,8 @@ export class FixApiService extends ApiService {
 Function to create an new Read and Write `Tag`.
 
 #### ReadonlyTag<T>
-
+- `(target: object): T | undefined`:
+Gets current tag value of the provided object.
 - `has(target: object): boolean`:
 Indicates whether or not the provided object has been tagged.
 
