@@ -10,7 +10,7 @@ export interface ReadonlyTag<T> {
 }
 
 /**
- * Tag allow to attach value using a 
+ * Tag allow to attach value using a
  */
 export interface Tag<T> extends ReadonlyTag<T | undefined> {
     readOnly(): ReadonlyTag<T | undefined>;
