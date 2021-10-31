@@ -5,37 +5,35 @@
 ### Lazy
 Lazy allow to get lazy references that will create the instance when its used not when its referenced.
 
-Exemple: *Resolving circular references:*
 ```ts
 class CustomService {
     constructor()  {
         console.debug("constructor");
     }
-    hello(): number {
+    hello() {
         console.debug("Hello!");
     }
 }
-```
-```ts
+
 const service = Lazy.get(
     () => new CustomService()),
     CustomService
 );
-console.debug("Reference to CustomService done!")
+console.debug("Reference to CustomService done!", service instanceof CustomService);
 service.hello();
 ```
 
 Output:
 
 ```
-> Reference to CustomService done!
+> Reference to CustomService done!, true
 > constructor
 > Hello!
 ```
 
 > See full documentation on [Lazy](./doc/lazy.md)
 ### Disposable
-Provide multiple way to reset or free handlers, resources or anything else the same way and more safely using this disposable implementation.
+Provide multiple way to reset objects or free handlers, resources or anything more safely using this disposable implementation.
 ```ts
 function $on(target: EventTarget, name: string, callback: EventListener): IDisposable {
     target.addEventListener(name, callback);
@@ -98,7 +96,7 @@ export class ApiClientBase {
 import { apiUrl, ApiClientBase } from "./xxx";
 
 @apiUrl("https://my-api-client/v1/")
-export class MyApiClient {
+export class MyApiClient extends ApiClientBase {
     getData(): any{
         return this.getJson("/data");
     }
