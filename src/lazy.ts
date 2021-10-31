@@ -100,6 +100,11 @@ export class Lazy<T extends object = object> implements IDisposable {
             getPrototypeOf: (_: T) => {
                 return this._prototype ?? Object;
             }
-        };
+        } as ProxyHandler<T>;
+    }
+
+    static get<T extends object = object>(factory: () => T, ctor?: Constructor<T>): T {
+        const lazy = new Lazy(factory, ctor);
+        return lazy.get();
     }
 }
