@@ -29,6 +29,16 @@ describe("Tag", () => {
         assert.equal(tag.get(CustomType), "Value");
     });
 
+    it(`Should associate properly a value to a type using the tag function`, () => {
+        const tag = Tag<string>("My Description");
+        class CustomType { }
+
+        tag(CustomType, "Value");
+
+        assert.isTrue(tag.has(CustomType));
+        assert.equal(tag(CustomType), "Value");
+        assert.equal(tag.get(CustomType), "Value");
+    });
 
     it(`Should override an existing value`, () => {
         const tag = Tag<string>("My Description");
@@ -103,5 +113,4 @@ describe("Tag", () => {
         assert.equal(Tags.hashId(obj1), 1);
         assert.equal(Tags.hashId(obj2), 2);
     });
-
 });
