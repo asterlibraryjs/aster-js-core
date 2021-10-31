@@ -1,4 +1,3 @@
-import { Lazy } from "src/lazy";
 import { Constructor } from "../type";
 
 const objClassPrototype = Object.getPrototypeOf(Object);
@@ -85,26 +84,3 @@ function* cloneEntries(obj: RawObject): Iterable<[PropertyKey, unknown]> {
         yield [key, clone(value, true)];
     }
 }
-
-
-class Service1 {
-    constructor(public service2: Service2){}
-}
-
-class Service2{
-    constructor(public service2: Service1){}
-}
-
-const services = new Map<Constructor, any>();
-
-const service1 = Lazy.get(
-    () => new Service1(services.get(Service2)),
-    Service1
-);
-const service2 = Lazy.get(
-    () => new Service2(services.get(Service1)),
-    Service2
-);
-
-services.set(Service1, service1);
-services.set(Service2, service2);
