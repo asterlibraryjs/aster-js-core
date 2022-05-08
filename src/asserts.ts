@@ -28,6 +28,11 @@ export namespace asserts {
         }
     }
 
+    export function returns<T>(value: T | undefined | null, message?: string): NonNullable<T> {
+        ensure<T>(value, message);
+        return value;
+    }
+
     export function ofType(value: unknown, type: "number", message?: string): asserts value is number;
     export function ofType(value: unknown, type: "boolean", message?: string): asserts value is boolean;
     export function ofType(value: unknown, type: "string", message?: string): asserts value is string;
