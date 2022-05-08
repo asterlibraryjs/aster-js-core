@@ -1,4 +1,4 @@
-import { Constructor } from "./type";
+import type { Constructor, Func } from "./type";
 
 export interface IDisposable {
     [IDisposable.dispose](): void;
@@ -18,7 +18,12 @@ export namespace IDisposable {
 
     export const dispose = Symbol("dispose");
 
-    export function create(callback: Function): IDisposable {
+    /**
+     * Create a new IDisposable from a callback
+     * @param callback Callback to call when dispose is invoked
+     * @returns Returns a new IDiposable instance
+     */
+    export function create(callback: Func): IDisposable {
         return {
             [IDisposable.dispose]: () => {
                 callback();
@@ -26,38 +31,67 @@ export namespace IDisposable {
         };
     }
 
-    export function safeDisposeAll(instance: any): void {
-        if (typeof instance === "object" && instance !== null && typeof instance[Symbol.iterator] === "function") {
-            for (const item of instance) safeDispose(item);
+    /**
+     * Dispose all provide instances, support any iterable instance.
+     * @param instances Instances to dispose
+     * @returns Returns all errors encountered during disposing each instances.
+     */
+    export function safeDisposeAll(instances: any): any[] {
+        if (typeof instances === "object" && instances !== null && typeof instances[Symbol.iterator] === "function") {
+            return [...instances].map(safeDispose);
         }
+        return [];
     }
 
-    export function safeDispose(instance: any): void {
+    /**
+     * Dispose the provided instance and catch exceptions that may occur
+     * @param instance Instance to dispose
+     * @returns Returns the catched disposing error or undefined
+     */
+    export function safeDispose(instance: any): any {
         if (typeof instance === "object" && instance !== null && typeof instance[dispose] === "function") {
-            instance[dispose]();
+            try {
+                instance[dispose]();
+            }
+            catch (ex) {
+                return ex;
+            }
         }
     }
 
+    /**
+     * Check if an instance is disposed, throw an error if it is
+     * @param instance Instance to check
+     */
     export function checkDisposed(instance: IDisposable & { readonly disposed: boolean }): void {
         if (instance.disposed) throw new DisposedError("Try to access to a disposed instance");
     }
 }
 
+/**
+ * Error triggered when trying to use a diposed instance
+ */
 export class DisposedError extends Error { }
 
 /** Do not use, this class is used to type the IDisposable.mixin() result */
 export class Disposable implements IDisposable {
     private _disposed?: boolean;
-    private _disposables?: IDisposable[];
+    private _disposables?: Set<IDisposable>;
 
     get disposed(): boolean { return Boolean(this._disposed); }
 
-    registerForDispose(disposable: IDisposable): void {
-        if (!this._disposables) {
-            this._disposables = [disposable];
-        }
-        else {
-            this._disposables.push(disposable);
+    /**
+     * Register all provided instances to dispose them when current instance will be disposed
+     * @param disposables Instance to attach
+     */
+    registerForDispose(...disposables: IDisposable[]): void {
+        for (const disposable of disposables) {
+            if (!this._disposables) {
+                this._disposables = new Set([disposable]);
+            }
+            else {
+                this._disposables.add(disposable);
+            }
         }
     }
 
