@@ -47,17 +47,6 @@ IDisposable.safeDispose(@event);
 ```
 > See more about [Disposable usage](./doc/disposable.md).
 
-### Function hooks
-```typescript
-// Make further fetch call log the request
-FunctionHook.define(self, "fetch", {
-    before: req => console.debug("Fetch", req)
-});
-```
-Function hooks are using disposable to help remove any hooks.
-
-> Full documentation: [FunctionHook](./doc/function-hook.md)
-
 ## Metadata
 ### `Tag()`
 
