@@ -1,6 +1,6 @@
 {
   "name": "@aster-js/core",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Aster core library part of Aster js library",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

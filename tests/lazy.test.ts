@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { assert as sassert, spy } from "sinon";
-import { Lazy } from "../src";
+import { isLazyProxy, Lazy } from "../src";
 
 describe("Lazy", () => {
 
@@ -66,6 +66,29 @@ describe("Lazy", () => {
         assert.isTrue(lazy.has());
         sassert.calledOnce(ctorSpy);
         assert.instanceOf(proxy, CustomType);
+    });
+
+
+    it("Should return true when using isLazyProxy over a Lazy proxy", () => {
+        const proxy = Lazy.get(() => new CustomType());
+
+        const result = isLazyProxy(proxy)
+
+        assert.isTrue(result);
+    });
+
+
+    it("Should return false when using isLazyProxy over a basic object", () => {
+        const result = isLazyProxy({})
+
+        assert.isFalse(result);
+    });
+
+
+    it("Should return false when using isLazyProxy over null value", () => {
+        const result = isLazyProxy(null)
+
+        assert.isFalse(result);
     });
 
 });
