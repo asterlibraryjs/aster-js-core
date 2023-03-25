@@ -8,6 +8,15 @@ const enum LazyState {
     disposed = 4
 }
 
+const IsLazyProxy = Symbol();
+
+export function isLazyProxy(instance: any): boolean {
+    if (typeof instance !== "undefined" && instance !== null) {
+        return Reflect.get(instance, IsLazyProxy) === true;
+    }
+    return false;
+}
+
 export class Lazy<T extends object = object> implements IDisposable {
     private _value: any;
     private _state?: LazyState;
@@ -87,6 +96,7 @@ export class Lazy<T extends object = object> implements IDisposable {
     private createProxyHandler(): ProxyHandler<T> {
         return {
             get: (_: T, prop: keyof T) => {
+                if (prop === IsLazyProxy) return true;
                 return this.getInstance()[prop];
             },
             set: (_: T, p: keyof T, value: any) => {
