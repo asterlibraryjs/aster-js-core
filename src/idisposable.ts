@@ -1,14 +1,16 @@
 import type { Constructor, Func } from "./type";
 
+if (!Symbol.dispose) Object.assign(Symbol, { dispose: Symbol("dispose") });
+
 export interface IDisposable {
-    [IDisposable.dispose](): void;
+    [Symbol.dispose](): void;
 }
 
 export function IDisposable<T extends Object>(ctor: Constructor<T>): Constructor<T & Disposable>;
 export function IDisposable(ctor: Constructor): Constructor {
     class CustomDisposable extends ctor { };
-    for (const key of Reflect.ownKeys(Disposable.prototype)) {
-        const desc = { ...Reflect.getOwnPropertyDescriptor(Disposable.prototype, key) };
+    for (const key of Reflect.ownKeys(DisposableHost.prototype)) {
+        const desc = { ...Reflect.getOwnPropertyDescriptor(DisposableHost.prototype, key) };
         Reflect.defineProperty(CustomDisposable.prototype, key, desc);
     }
     return CustomDisposable;
@@ -16,7 +18,8 @@ export function IDisposable(ctor: Constructor): Constructor {
 
 export namespace IDisposable {
 
-    export const dispose = Symbol("dispose");
+    /** @deprecated use Symbol.dispose instead */
+    export const dispose: typeof Symbol.dispose = Symbol.dispose;
 
     /**
      * Create a new IDisposable from a callback
@@ -25,7 +28,7 @@ export namespace IDisposable {
      */
     export function create(callback: Func): IDisposable {
         return {
-            [IDisposable.dispose]: () => {
+            [Symbol.dispose]: () => {
                 callback();
             }
         };
@@ -73,8 +76,8 @@ export namespace IDisposable {
  */
 export class DisposedError extends Error { }
 
-/** Do not use, this class is used to type the IDisposable.mixin() result */
-export class Disposable implements IDisposable {
+/** Represents a class that contains dependencies to dispose */
+export class DisposableHost implements IDisposable {
     private _disposed?: boolean;
     private _disposables?: Set<IDisposable>;
 
