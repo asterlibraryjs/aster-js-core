@@ -56,7 +56,6 @@ describe("Lazy", () => {
         assert.instanceOf(proxy, CustomType);
     });
 
-
     it("Should return true to instanceof even when not provided after the instance is created", () => {
         const lazy = new Lazy(() => new CustomType());
         const proxy = lazy.get();
@@ -68,6 +67,16 @@ describe("Lazy", () => {
         assert.instanceOf(proxy, CustomType);
     });
 
+    it("Should spread properly properties", () => {
+        const lazy = new Lazy(() => ({ id: 0, name: "test" }));
+        const proxy = lazy.get();
+
+        lazy.build();
+
+        const result = { ...proxy };
+
+        assert.deepEqual(result, { id: 0, name: "test" });
+    });
 
     it("Should return true when using isLazyProxy over a Lazy proxy", () => {
         const proxy = Lazy.get(() => new CustomType());
@@ -77,13 +86,11 @@ describe("Lazy", () => {
         assert.isTrue(result);
     });
 
-
     it("Should return false when using isLazyProxy over a basic object", () => {
         const result = isLazyProxy({})
 
         assert.isFalse(result);
     });
-
 
     it("Should return false when using isLazyProxy over null value", () => {
         const result = isLazyProxy(null)

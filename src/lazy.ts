@@ -111,6 +111,14 @@ export class Lazy<T extends object = object> implements IDisposable {
             },
             getPrototypeOf: (_: T) => {
                 return this._prototype ?? Object;
+            },
+            getOwnPropertyDescriptor: (_: T, prop: keyof T) => {
+                const instance = this.getInstance();
+                return Reflect.getOwnPropertyDescriptor(instance, prop);
+            },
+            ownKeys: (_: T) => {
+                const instance = this.getInstance();
+                return Reflect.ownKeys(instance);
             }
         } as ProxyHandler<T>;
     }
