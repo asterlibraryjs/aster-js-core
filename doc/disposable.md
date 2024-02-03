@@ -1,7 +1,7 @@
 
 ## Disposable
 
-`Disposable` provide a base implementation for `IDisposable`. 
+`Disposable` provide a base implementation for `IDisposable`.
 
 `IDisposable` is a contract to ensure a total destruction of any instance that implement it.
 
@@ -27,7 +27,7 @@ export class CustomEventListener implements EventListenerObject, IDisposable {
         evt.stopPropagation();
     }
 
-    [IDisposable.dispose](): void {
+    [Symbol.dispose](): void {
         this._targets.forEach(src => src.removeEventListener(this._type, this));
         this._targets.clear();
     }

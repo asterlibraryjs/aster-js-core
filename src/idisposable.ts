@@ -2,6 +2,11 @@ import type { Constructor, Func } from "./type";
 
 if (!Symbol.dispose) Object.assign(Symbol, { dispose: Symbol("dispose") });
 
+/**
+ * - IDisposable is an interface constract for disposable object.
+ * - IDisposable is also a mixin function to create disposable through composition
+ * - IDisposable also contains static methods to create or safely dispose instances
+ */
 export interface IDisposable {
     [Symbol.dispose](): void;
 }
@@ -27,11 +32,7 @@ export namespace IDisposable {
      * @returns Returns a new IDiposable instance
      */
     export function create(callback: Func): IDisposable {
-        return {
-            [Symbol.dispose]: () => {
-                callback();
-            }
-        };
+        return { [Symbol.dispose]: () => void callback() };
     }
 
     /**
@@ -52,9 +53,9 @@ export namespace IDisposable {
      * @returns Returns the catched disposing error or undefined
      */
     export function safeDispose(instance: any): any {
-        if (typeof instance === "object" && instance !== null && typeof instance[dispose] === "function") {
+        if (typeof instance === "object" && instance !== null && typeof instance[Symbol.dispose] === "function") {
             try {
-                instance[dispose]();
+                instance[Symbol.dispose]();
             }
             catch (ex) {
                 return ex;
@@ -76,7 +77,9 @@ export namespace IDisposable {
  */
 export class DisposedError extends Error { }
 
-/** Represents a class that contains dependencies to dispose */
+/**
+ * Represents a class that contains dependencies to dispose
+ */
 export class DisposableHost implements IDisposable {
     private _disposed?: boolean;
     private _disposables?: Set<IDisposable>;
@@ -88,13 +91,13 @@ export class DisposableHost implements IDisposable {
      * @param disposables Instance to attach
      */
     registerForDispose(...disposables: IDisposable[]): void {
-        for (const disposable of disposables) {
-            if (!this._disposables) {
-                this._disposables = new Set([disposable]);
-            }
-            else {
+        if (this._disposables) {
+            for (const disposable of disposables) {
                 this._disposables.add(disposable);
             }
+        }
+        else {
+            this._disposables = new Set(disposables);
         }
     }
 
@@ -102,7 +105,7 @@ export class DisposableHost implements IDisposable {
         IDisposable.checkDisposed(this);
     }
 
-    [IDisposable.dispose](): void {
+    [Symbol.dispose](): void {
         if (!this._disposed) {
             this._disposed = true;
 

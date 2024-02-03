@@ -78,7 +78,7 @@ export class Lazy<T extends object = object> implements IDisposable {
         return this._value;
     }
 
-    [IDisposable.dispose](): void {
+    [Symbol.dispose](): void {
         if (this._state === LazyState.value) {
             IDisposable.safeDispose(this._value);
         }
@@ -97,18 +97,28 @@ export class Lazy<T extends object = object> implements IDisposable {
         return {
             get: (_: T, prop: keyof T) => {
                 if (prop === IsLazyProxy) return true;
-                return this.getInstance()[prop];
+
+                const instance = this.getInstance();
+                return Reflect.get(instance, prop, instance);
             },
-            set: (_: T, p: keyof T, value: any) => {
-                this.getInstance()[p] = value;
-                return true;
+            set: (_: T, prop: keyof T, value: any) => {
+                const instance = this.getInstance();
+                return Reflect.set(instance, prop, value, instance);
             },
-            deleteProperty: (_: T, p: keyof T) => {
-                delete this.getInstance()[p];
-                return true;
+            deleteProperty: (_: T, prop: keyof T) => {
+                const instance = this.getInstance();
+                return Reflect.deleteProperty(instance, prop);
             },
             getPrototypeOf: (_: T) => {
                 return this._prototype ?? Object;
+            },
+            getOwnPropertyDescriptor: (_: T, prop: keyof T) => {
+                const instance = this.getInstance();
+                return Reflect.getOwnPropertyDescriptor(instance, prop);
+            },
+            ownKeys: (_: T) => {
+                const instance = this.getInstance();
+                return Reflect.ownKeys(instance);
             }
         } as ProxyHandler<T>;
     }
