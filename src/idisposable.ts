@@ -88,9 +88,13 @@ export class DisposableHost implements IDisposable {
 
     /**
      * Register all provided instances to dispose them when current instance will be disposed
-     * @param disposables Instance to attach
+     * @param disposableOrAction Instances to dispose or action to run during dispose phase
      */
-    registerForDispose(...disposables: IDisposable[]): void {
+    registerForDispose(...disposableOrAction: (IDisposable | Func)[]): void {
+        const disposables = disposableOrAction.map(x => typeof x === "function" ? IDisposable.create(x) : x);
+
+        if (this._disposed) IDisposable.safeDisposeAll(disposables);
+
         if (this._disposables) {
             for (const disposable of disposables) {
                 this._disposables.add(disposable);
