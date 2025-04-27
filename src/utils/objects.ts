@@ -66,21 +66,9 @@ export function* getObjectEntries<T extends object>(obj: T): Iterable<[keyof T, 
     }
 }
 
+/** @deprecated Use structuredClone */
 export function clone<T = any>(value: T, deep: boolean): T;
 export function clone<T = any>(value: T[], deep: boolean): T[];
 export function clone(value: any, deep: boolean): any {
-    if (Array.isArray(value)) {
-        return value.map(v => deep ? clone(v, true) : v);
-    }
-    if (isRawObject(value)) {
-        const entries = deep ? cloneEntries(value) : Object.entries(value);
-        return Object.fromEntries(entries);
-    }
-    return value;
-}
-
-function* cloneEntries(obj: RawObject): Iterable<[PropertyKey, unknown]> {
-    for (const [key, value] of getObjectEntries(obj)) {
-        yield [key, clone(value, true)];
-    }
+    return structuredClone(value);
 }

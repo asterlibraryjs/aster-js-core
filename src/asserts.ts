@@ -28,6 +28,30 @@ export namespace asserts {
         }
     }
 
+    export function empty<T>(value: T[] | undefined | null, message?: string): asserts value is [T, ...T[]] {
+        if (typeof value === "undefined" || value === null || value.length !== 0) {
+            throw new AssertionError(message ?? "A valid empty array is expected");
+        }
+    }
+
+    export function notEmpty<T>(value: T[] | undefined | null, message?: string): asserts value is [T, ...T[]] {
+        if (typeof value === "undefined" || value === null || value.length === 0) {
+            throw new AssertionError(message ?? "A valid non empty array is expected");
+        }
+    }
+
+    export function single<T>(value: T[] | undefined | null, message?: string): asserts value is [T, ...T[]] {
+        if (typeof value === "undefined" || value === null || value.length !== 1) {
+            throw new AssertionError(message ?? "A valid array with a single entry is expected");
+        }
+    }
+
+    export function many<T>(value: T[] | undefined | null, message?: string): asserts value is [T, ...T[]] {
+        if (typeof value === "undefined" || value === null || value.length <= 1) {
+            throw new AssertionError(message ?? "A valid array with more than 1 entry is expected");
+        }
+    }
+
     export function returns<T>(value: T | undefined | null, message?: string): NonNullable<T> {
         ensure<T>(value, message);
         return value;

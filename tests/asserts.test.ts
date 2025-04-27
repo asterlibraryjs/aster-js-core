@@ -49,6 +49,41 @@ describe("asserts", () => {
 
     });
 
+    describe("array", () => {
+
+        it(`Should not throw with valid arrays`, () => {
+            assert.doesNotThrow(() => asserts.empty([]));
+            assert.doesNotThrow(() => asserts.single([1]));
+            assert.doesNotThrow(() => asserts.many([3, 2]));
+            assert.doesNotThrow(() => asserts.notEmpty([1]));
+            assert.doesNotThrow(() => asserts.notEmpty([1,2]));
+        });
+
+        it("`Should throw with invalid arrays`", () => {
+            assert.throw(() => asserts.empty([1]));
+            assert.throw(() => asserts.single([]));
+            assert.throw(() => asserts.single([1,2]));
+            assert.throw(() => asserts.many([]));
+            assert.throw(() => asserts.many([2]));
+            assert.throw(() => asserts.notEmpty([]));
+        });
+
+        it("`Should throw with null`", () => {
+            assert.throw(() => asserts.empty(null));
+            assert.throw(() => asserts.single(null));
+            assert.throw(() => asserts.many(null));
+            assert.throw(() => asserts.notEmpty(null));
+        });
+
+        it("`Should throw with undefined`", () => {
+            assert.throw(() => asserts.empty(undefined));
+            assert.throw(() => asserts.single(undefined));
+            assert.throw(() => asserts.many(undefined));
+            assert.throw(() => asserts.notEmpty(undefined));
+        });
+
+    });
+
     describe("ofType", () => {
 
         (<[any, TypeOfResult][]>[
