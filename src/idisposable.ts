@@ -27,6 +27,15 @@ export namespace IDisposable {
     export const dispose: typeof Symbol.dispose = Symbol.dispose;
 
     /**
+    * Check whether the provided instance is a valid disposable object
+    * @param value Value to check
+    * @returns Returns a boolean used to typeguard the value into IDisposable
+    */
+    export function cast(value: unknown): value is IDisposable {
+        return typeof value === "object" && value !== null && Reflect.has(value, dispose);
+    }
+
+    /**
      * Create a new IDisposable from a callback
      * @param callback Callback to call when dispose is invoked
      * @returns Returns a new IDiposable instance
